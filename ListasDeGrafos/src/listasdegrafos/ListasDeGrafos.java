@@ -1,15 +1,20 @@
 package listasdegrafos;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
 public class ListasDeGrafos {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException, IOException {
         AlgoritmosEmGrafos grafo1 = new AlgoritmosEmGrafos(15);
+        
+        
+        int choose= 3;
 
-        try {
+        if(choose == 1){
+            try {
             FileReader arq = new FileReader(args[0]);
             BufferedReader lerArq = new BufferedReader(arq);
 
@@ -49,9 +54,10 @@ public class ListasDeGrafos {
         for (int i = 0; i < grafo1.getVerticePredecessorLargura().length; i++) {
             System.out.println("Pai Largura " + i + ": " + grafo1.getVerticePredecessorLargura()[i]);
         }
-
+        }
         //GRAFO 2----------------------------------------------------------------------------------------------------------------
-        AlgoritmosEmGrafos grafo2 = new AlgoritmosEmGrafos(30);
+        if(choose == 2){
+            AlgoritmosEmGrafos grafo2 = new AlgoritmosEmGrafos(30);
 
         try {
             FileReader arq = new FileReader(args[1]);
@@ -93,7 +99,30 @@ public class ListasDeGrafos {
         for (int i = 0; i < grafo2.getVerticePredecessorLargura().length; i++) {
             System.out.println("Pai Largura " + i + ": " + grafo2.getVerticePredecessorLargura()[i]);
         }
-
+        }
         //-LARGURA-----------------------LARGURA--------------------------------LARGURA---------------------------------LARGURA-----------------------
+    
+        
+        //AGM-----------------AGM----------------AGM--------------AGM------------AGM
+        if(choose == 3){
+        FileReader arq = new FileReader(args[2]);
+        BufferedReader lerArq = new BufferedReader(arq);
+        
+        String vertCount = lerArq.readLine();
+        String []vert1 = vertCount.split(" ");
+        AlgoritmosEmGrafos AGM = new AlgoritmosEmGrafos(Integer.valueOf(vert1[0]));
+        
+        String linha= lerArq.readLine();
+        
+        while(linha!=null){
+            String[] valores= linha.split(" ");
+            AGM.insereArestaNaoOrientada(Integer.valueOf(valores[0]), Integer.valueOf(valores[1]), Integer.valueOf(valores[2]));
+            linha= lerArq.readLine();
+        }
+        
+        System.out.println("Peso AGM: "+AGM.iniciaAGM(0));
+        }
     }
+    
+    
 }

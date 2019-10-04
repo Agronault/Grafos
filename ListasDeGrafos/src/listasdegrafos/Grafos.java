@@ -24,6 +24,12 @@ public class Grafos {
         matrizAdjacencia[vertice1][vertice2] = peso;
     }
     
+    public void insereArestaNaoOrientada(int vertice1, int vertice2, int peso) {
+        // Adiciona um aresta no grafo com um dado peso
+        matrizAdjacencia[vertice1][vertice2] = peso;
+        matrizAdjacencia[vertice2][vertice1] = peso;
+    }
+    
     public boolean existeAresta(int vertice1, int vertice2) {
         // Verifica se existe uma aresta no grafo
         return matrizAdjacencia[vertice1][vertice2] != 0;

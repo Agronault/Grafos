@@ -1,7 +1,10 @@
 package listasdegrafos;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.Objects;
+import javafx.util.Pair;
 
 public class AlgoritmosEmGrafos extends Grafos {
 
@@ -15,6 +18,11 @@ public class AlgoritmosEmGrafos extends Grafos {
     private boolean doneCMC;
     private int lastRoot;
 
+    private final ArrayList< Pair< Integer, Integer>> arestasAGM;
+    private final int[] verticeAntecessorAGM;
+    private ArrayList<Integer> visitados;
+    private ArrayList<Integer> naovisitados;
+
     public AlgoritmosEmGrafos(int vertices) {
         super(vertices);
         distanciaProfundidade = new int[vertices];
@@ -25,6 +33,8 @@ public class AlgoritmosEmGrafos extends Grafos {
         distanciasCMC = new int[vertices];
         verticeAntecessorCMC = new int[vertices];
         doneCMC = false;
+        this.arestasAGM = new ArrayList<>();
+        this.verticeAntecessorAGM = new int[vertices];
     }
 
     private void buscaProfundidade(int vertice) {
@@ -153,6 +163,60 @@ public class AlgoritmosEmGrafos extends Grafos {
             }
         }
         return true;
+    }
+
+    public int iniciaAGM(int vertice) {
+        visitados = new ArrayList<>();
+        naovisitados = new ArrayList<>();
+
+        for (int i = 0; i < this.numeroVertices; i++) {
+            naovisitados.add(i);
+        }
+
+        naovisitados.remove((Integer) vertice);
+        visitados.add((Integer) vertice);
+
+        for (int i = 0; i < this.numeroVertices; i++) {
+            this.verticeAntecessorAGM[i] = -1;
+        }
+
+        return AGM(vertice);
+    }
+
+    private int AGM(int vertice) {
+        int peso = 0;
+
+        while (!this.naovisitados.isEmpty()) {
+            int min = Integer.MAX_VALUE;
+            Integer visit = -1;
+            Integer notvisit = -1;
+            
+            for (Integer visitado : this.visitados) {
+                for (Integer naovisitado : this.naovisitados) {
+                    if (this.matrizAdjacencia[visitado][naovisitado] < min && this.matrizAdjacencia[visitado][naovisitado] != 0) {
+                        min = this.matrizAdjacencia[visitado][naovisitado];
+                        visit = visitado;
+                        notvisit = naovisitado;
+                    }
+                }
+            }
+            if (visit != -1 && notvisit != -1) {
+                this.arestasAGM.add(new Pair(visit, notvisit));
+                for (int i = 0; i < this.naovisitados.size(); i++) {
+                    if (this.naovisitados.get(i) == notvisit) {
+                        System.out.println(visit + " : " + notvisit);
+                        this.naovisitados.remove(i);
+                        break;
+                    }
+                }
+                this.visitados.add(notvisit);
+                System.out.println(min);
+                peso += min;
+            }
+
+        }
+
+        return peso;
     }
 
     public int[] getDistanciaProfundidade() {
