@@ -25,7 +25,7 @@ public class ListasDeGrafos {
             int subchoose = scanner.nextInt();
             if (subchoose == 1) {
                 try {
-                    FileReader arq = new FileReader(args[0]);
+                    FileReader arq = new FileReader("grafo1.txt");
                     BufferedReader lerArq = new BufferedReader(arq);
 
                     String linha = lerArq.readLine();
@@ -70,7 +70,7 @@ public class ListasDeGrafos {
                 AlgoritmosEmGrafos grafo2 = new AlgoritmosEmGrafos(30);
 
                 try {
-                    FileReader arq = new FileReader(args[1]);
+                    FileReader arq = new FileReader("grafo2.txt");
                     BufferedReader lerArq = new BufferedReader(arq);
 
                     String linha = lerArq.readLine();
@@ -111,15 +111,81 @@ public class ListasDeGrafos {
                 }
             }
         }
-        //-LARGURA-----------------------LARGURA--------------------------------LARGURA---------------------------------LARGURA-----------------------
-        if(choose == 2){
+
+        if (choose == 2) {
             System.out.println("Dijkstra");
-            //Implementar main para Dijkstra
+            System.out.println("(1)- Percorrer grafo A");
+            System.out.println("(2)- Percorrer grafo B");
+            int subchoose = scanner.nextInt();
+            FileReader arq = null;
+            if (subchoose == 1) {
+                arq = new FileReader("grafoa.txt");
+            } else {
+                arq = new FileReader("grafob.txt");
+            }
+            BufferedReader lerArq = new BufferedReader(arq);
+
+            String vertCount = lerArq.readLine();
+            String[] vert1 = vertCount.split(" ");
+            AlgoritmosEmGrafos Dijkstra = new AlgoritmosEmGrafos(Integer.valueOf(vert1[0]));
+            String linha = lerArq.readLine();
+
+            while (linha != null) {
+                String[] valores = linha.split(" ");
+                Dijkstra.insereAresta(Integer.valueOf(valores[0]), Integer.valueOf(valores[1]), Integer.valueOf(valores[2]));
+                linha = lerArq.readLine();
+            }
+            
+            System.out.println("_____________________Experimento 1_____________________");
+            
+            System.out.println("Peso para V-1: " + Dijkstra.iniciaDijkstra(0, Integer.valueOf(vert1[0]) - 1));
+            
+            int[] parent = Dijkstra.getVerticeAntecessorCMC();
+            
+            int aux=parent[Integer.valueOf(vert1[0]) -1];
+            while(aux!=0 && aux!= -1){
+                System.out.print("-->"+aux);
+                if(aux == -1)
+                    break;
+                aux=parent[aux];
+            }
+            System.out.println("-->0 (Raiz)");
+            
+            System.out.println("_____________________Experimento 2_____________________");
+            
+            int[] pesos = Dijkstra.iniciaDijkstra(0);
+            
+            
+            for(int i=0; i<parent.length; i++){
+            System.out.println("Peso para "+ i+ ": "+ pesos[i]);
+              
+            
+            aux=parent[i];
+                
+            while(aux!=0 && aux!= -1){
+                System.out.print("-->"+aux);
+                if(aux == -1)
+                    break;
+                aux=parent[aux];
+            }
+            System.out.println("-->0 (Raiz)");
+            
+            }
+            
         }
+
         //AGM-----------------AGM----------------AGM--------------AGM------------AGM
         if (choose == 3) {
             System.out.println("AGM");
-            FileReader arq = new FileReader(args[2]);
+            System.out.println("(1)- Percorrer grafo 1");
+            System.out.println("(2)- Percorrer grafo 2");
+            int subchoose = scanner.nextInt();
+            FileReader arq = null;
+            if (subchoose == 1) {
+                arq = new FileReader("grafoagm1.txt");
+            } else {
+                arq = new FileReader("grafoagm2.txt");
+            }
             BufferedReader lerArq = new BufferedReader(arq);
 
             String vertCount = lerArq.readLine();

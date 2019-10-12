@@ -103,7 +103,7 @@ public class AlgoritmosEmGrafos extends Grafos {
         }
     }
 
-    public int iniciaDijkstra(int verticeInicial, int verticeFinal) {
+    public int iniciaDijkstra(int verticeInicial, int verticeFinal) { // para busca de um vértice específico
         if (this.doneCMC == false || verticeInicial != this.lastRoot) {
             dijkstra(verticeInicial);
             this.lastRoot = verticeInicial;
@@ -112,7 +112,7 @@ public class AlgoritmosEmGrafos extends Grafos {
         return this.distanciasCMC[verticeFinal];
     }
 
-    public int[] iniciaDijkstra(int verticeInicial) {
+    public int[] iniciaDijkstra(int verticeInicial) { // para buscas gerais
         if (this.doneCMC == false || verticeInicial != this.lastRoot) {
             dijkstra(verticeInicial);
             this.lastRoot = verticeInicial;
@@ -121,7 +121,7 @@ public class AlgoritmosEmGrafos extends Grafos {
         return this.distanciasCMC;
     }
 
-    private void dijkstra(int verticeInicial) {
+    private void dijkstra(int verticeInicial) {// executa dijkstra
 
         boolean[] done = new boolean[this.numeroVertices];
 
@@ -132,12 +132,14 @@ public class AlgoritmosEmGrafos extends Grafos {
         }
         this.distanciasCMC[verticeInicial] = 0; //distancia da raiz é 0
 
-        while (!vazio(done)) {
+        while (!vazio(done)) {// enquanto não resolveu tudo
             int aux = prioridade(done); //retira o menor da fila
-            done[aux] = true;
+            done[aux] = true; //marcar como visitado
             for (int i = 0; i < this.matrizAdjacencia[aux].length; i++) {
-                if (this.distanciasCMC[aux] + matrizAdjacencia[aux][i] < this.distanciasCMC[i]) {
-                    this.distanciasCMC[i] = this.distanciasCMC[aux] + matrizAdjacencia[aux][i];
+                if (this.matrizAdjacencia[aux][i] != 0 && this.distanciasCMC[aux] + this.matrizAdjacencia[aux][i] < this.distanciasCMC[i]) {
+                    //verificar se o vértice é adjacente e a nova solução é melhor que a antiga
+                    this.distanciasCMC[i] = this.distanciasCMC[aux] + this.matrizAdjacencia[aux][i];
+                    //atribuição
                     this.verticeAntecessorCMC[i] = aux;
                 }
             }
@@ -158,7 +160,7 @@ public class AlgoritmosEmGrafos extends Grafos {
 
     private boolean vazio(boolean[] done) {
         for (int i = 0; i < done.length; i++) {
-            if (done[i] == true) {
+            if (done[i] == false) {
                 return false;
             }
         }
@@ -190,7 +192,7 @@ public class AlgoritmosEmGrafos extends Grafos {
             int min = Integer.MAX_VALUE;
             Integer visit = -1;
             Integer notvisit = -1;
-            
+
             for (Integer visitado : this.visitados) {
                 for (Integer naovisitado : this.naovisitados) {
                     if (this.matrizAdjacencia[visitado][naovisitado] < min && this.matrizAdjacencia[visitado][naovisitado] != 0) {
@@ -218,6 +220,7 @@ public class AlgoritmosEmGrafos extends Grafos {
 
         return peso;
     }
+    
 
     public int[] getDistanciaProfundidade() {
         return distanciaProfundidade;
