@@ -18,6 +18,14 @@ public class AlgoritmosEmGrafos extends Grafos {
     private boolean doneCMC;
     private int lastRoot;
 
+    public ArrayList<Pair<Integer, Integer>> getArestasAGM() {
+        return arestasAGM;
+    }
+
+    public int[] getVerticeAntecessorAGM() {
+        return verticeAntecessorAGM;
+    }
+
     private final ArrayList< Pair< Integer, Integer>> arestasAGM;
     private final int[] verticeAntecessorAGM;
     private ArrayList<Integer> visitados;
@@ -185,34 +193,35 @@ public class AlgoritmosEmGrafos extends Grafos {
         return AGM(vertice);
     }
 
-    private int AGM(int vertice) {
+    private int AGM(int vertice) { //executa a construcao da árvore
         int peso = 0;
 
-        while (!this.naovisitados.isEmpty()) {
+        while (!this.naovisitados.isEmpty()) {//enquanto ainda há não visitados
             int min = Integer.MAX_VALUE;
             Integer visit = -1;
             Integer notvisit = -1;
 
-            for (Integer visitado : this.visitados) {
+            for (Integer visitado : this.visitados) {//faz interface de corte como demonstrado em sala
                 for (Integer naovisitado : this.naovisitados) {
-                    if (this.matrizAdjacencia[visitado][naovisitado] < min && this.matrizAdjacencia[visitado][naovisitado] != 0) {
+                    if (this.matrizAdjacencia[visitado][naovisitado] < min && this.matrizAdjacencia[visitado][naovisitado] != 0) {//menor válido
                         min = this.matrizAdjacencia[visitado][naovisitado];
                         visit = visitado;
                         notvisit = naovisitado;
                     }
                 }
             }
-            if (visit != -1 && notvisit != -1) {
-                this.arestasAGM.add(new Pair(visit, notvisit));
-                for (int i = 0; i < this.naovisitados.size(); i++) {
-                    if (this.naovisitados.get(i) == notvisit) {
-                        System.out.println(visit + " : " + notvisit);
-                        this.naovisitados.remove(i);
+            if (visit != -1 && notvisit != -1) {//validade
+                this.arestasAGM.add(new Pair(visit, notvisit));//adicionar nova aresta (pair A->B)
+                this.verticeAntecessorAGM[notvisit] = visit;
+                for (int i = 0; i < this.naovisitados.size(); i++) {//é preciso percorrer por problema
+                    if (this.naovisitados.get(i) == notvisit) {    //de compatibilidade índice-objeto do remove()
+                        //System.out.println(visit + " : " + notvisit);
+                        this.naovisitados.remove(i);//se tornou visitado
                         break;
                     }
                 }
                 this.visitados.add(notvisit);
-                System.out.println(min);
+                //System.out.println(min);
                 peso += min;
             }
 

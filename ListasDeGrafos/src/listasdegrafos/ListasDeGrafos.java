@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
+import javafx.util.Pair;
 
 public class ListasDeGrafos {
 
@@ -201,6 +202,16 @@ public class ListasDeGrafos {
             }
 
             System.out.println("Peso AGM: " + AGM.iniciaAGM(0));
+            System.out.println("Arestas:");
+            Pair[] aux = new Pair[1];
+            aux = (Pair[])AGM.getArestasAGM().toArray(aux);
+            for(Pair aresta : aux){
+                System.out.println(aresta.getKey().toString() + "--" + aresta.getValue().toString());
+            }
+            
+            for(int value : AGM.getVerticeAntecessorAGM()){
+            System.out.print("["+value+"]"+" ");
+            }
         }
     }
 
