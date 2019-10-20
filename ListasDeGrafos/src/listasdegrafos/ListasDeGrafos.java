@@ -136,43 +136,43 @@ public class ListasDeGrafos {
                 Dijkstra.insereAresta(Integer.valueOf(valores[0]), Integer.valueOf(valores[1]), Integer.valueOf(valores[2]));
                 linha = lerArq.readLine();
             }
-            
+
             System.out.println("_____________________Experimento 1_____________________");
-            
+
             System.out.println("Peso para V-1: " + Dijkstra.iniciaDijkstra(0, Integer.valueOf(vert1[0]) - 1));
-            
+
             int[] parent = Dijkstra.getVerticeAntecessorCMC();
-            
-            int aux=parent[Integer.valueOf(vert1[0]) -1];
-            while(aux!=0 && aux!= -1){
-                System.out.print("-->"+aux);
-                if(aux == -1)
+
+            int aux = parent[Integer.valueOf(vert1[0]) - 1];
+            while (aux != 0 && aux != -1) {
+                System.out.print("-->" + aux);
+                if (aux == -1) {
                     break;
-                aux=parent[aux];
+                }
+                aux = parent[aux];
             }
             System.out.println("-->0 (Raiz)");
-            
+
             System.out.println("_____________________Experimento 2_____________________");
-            
+
             int[] pesos = Dijkstra.iniciaDijkstra(0);
-            
-            
-            for(int i=0; i<parent.length; i++){
-            System.out.println("Peso para "+ i+ ": "+ pesos[i]);
-              
-            
-            aux=parent[i];
-                
-            while(aux!=0 && aux!= -1){
-                System.out.print("-->"+aux);
-                if(aux == -1)
-                    break;
-                aux=parent[aux];
+
+            for (int i = 0; i < parent.length; i++) {
+                System.out.println("Peso para " + i + ": " + pesos[i]);
+
+                aux = parent[i];
+
+                while (aux != 0 && aux != -1) {
+                    System.out.print("-->" + aux);
+                    if (aux == -1) {
+                        break;
+                    }
+                    aux = parent[aux];
+                }
+                System.out.println("-->0 (Raiz)");
+
             }
-            System.out.println("-->0 (Raiz)");
-            
-            }
-            
+
         }
 
         //AGM-----------------AGM----------------AGM--------------AGM------------AGM
@@ -200,17 +200,32 @@ public class ListasDeGrafos {
                 AGM.insereArestaNaoOrientada(Integer.valueOf(valores[0]), Integer.valueOf(valores[1]), Integer.valueOf(valores[2]));
                 linha = lerArq.readLine();
             }
-
+            
+            System.out.println("Experimento 1, saindo do vértice 0");
             System.out.println("Peso AGM: " + AGM.iniciaAGM(0));
             System.out.println("Arestas:");
             Pair[] aux = new Pair[1];
-            aux = (Pair[])AGM.getArestasAGM().toArray(aux);
-            for(Pair aresta : aux){
+            aux = (Pair[]) AGM.getArestasAGM().toArray(aux);
+            for (Pair aresta : aux) {
                 System.out.println(aresta.getKey().toString() + "--" + aresta.getValue().toString());
             }
+
+            for (int value : AGM.getVerticeAntecessorAGM()) {
+                System.out.print("[" + value + "]" + " ");
+            }
             
-            for(int value : AGM.getVerticeAntecessorAGM()){
-            System.out.print("["+value+"]"+" ");
+            System.out.println("\n");
+            System.out.println("Experimento 2, saindo do vértice 3");
+            System.out.println("Peso AGM: " + AGM.iniciaAGM(3));
+            System.out.println("Arestas:");
+            aux = new Pair[1];
+            aux = (Pair[]) AGM.getArestasAGM().toArray(aux);
+            for (Pair aresta : aux) {
+                System.out.println(aresta.getKey().toString() + "--" + aresta.getValue().toString());
+            }
+
+            for (int value : AGM.getVerticeAntecessorAGM()) {
+                System.out.print("[" + value + "]" + " ");
             }
         }
     }

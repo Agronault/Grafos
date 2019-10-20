@@ -26,7 +26,7 @@ public class AlgoritmosEmGrafos extends Grafos {
         return verticeAntecessorAGM;
     }
 
-    private final ArrayList< Pair< Integer, Integer>> arestasAGM;
+    private ArrayList< Pair< Integer, Integer>> arestasAGM;
     private final int[] verticeAntecessorAGM;
     private ArrayList<Integer> visitados;
     private ArrayList<Integer> naovisitados;
@@ -176,6 +176,7 @@ public class AlgoritmosEmGrafos extends Grafos {
     }
 
     public int iniciaAGM(int vertice) {
+        this.arestasAGM = new ArrayList<>();
         visitados = new ArrayList<>();
         naovisitados = new ArrayList<>();
 
