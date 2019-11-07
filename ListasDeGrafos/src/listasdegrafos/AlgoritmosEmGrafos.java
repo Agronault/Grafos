@@ -17,6 +17,8 @@ public class AlgoritmosEmGrafos extends Grafos {
     private final int[] verticeAntecessorCMC;
     private boolean doneCMC;
     private int lastRoot;
+    private final ArrayList< ArrayList< Integer>> caminhosDeAumentoFR;
+    private final ArrayList< Integer> capacidadeResidual;
 
     public ArrayList<Pair<Integer, Integer>> getArestasAGM() {
         return arestasAGM;
@@ -43,6 +45,8 @@ public class AlgoritmosEmGrafos extends Grafos {
         doneCMC = false;
         this.arestasAGM = new ArrayList<>();
         this.verticeAntecessorAGM = new int[vertices];
+        this.caminhosDeAumentoFR = new ArrayList<>();
+        this.capacidadeResidual = new ArrayList<>();
     }
 
     private void buscaProfundidade(int vertice) {
@@ -230,7 +234,95 @@ public class AlgoritmosEmGrafos extends Grafos {
 
         return peso;
     }
-    
+
+    public int iniciaFluxoMaximoEmRedes(int verticeInicial, int verticeFinal) {
+        this.caminhosDeAumentoFR.clear();
+        this.capacidadeResidual.clear();
+        buscaProfundidadeFluxo(verticeInicial, verticeFinal, new ArrayList<Integer>(), verticeInicial);
+
+        return fluxoMaximoEmRedes(verticeInicial, verticeFinal);
+
+    }
+
+    private int fluxoMaximoEmRedes(int verticeInicial, int verticeFinal) {
+
+        while (!this.caminhosDeAumentoFR.isEmpty()) {
+            int melhorCaminho = maiorFlux();
+
+            for (int i = this.caminhosDeAumentoFR.get(melhorCaminho).size() - 1; i >= 1; i--) {
+                int verticeA = this.caminhosDeAumentoFR.get(melhorCaminho).get(i);
+                int verticeB = this.caminhosDeAumentoFR.get(melhorCaminho).get(i - 1);
+
+                super.setPeso(verticeA, verticeB,
+                        super.getPeso(verticeA, verticeB) + this.capacidadeResidual.get(melhorCaminho));
+
+                super.setPeso(verticeB, verticeA,
+                        super.getPeso(verticeB, verticeA) - this.capacidadeResidual.get(melhorCaminho));
+            }
+
+            this.caminhosDeAumentoFR.clear();
+            this.capacidadeResidual.clear();
+            buscaProfundidadeFluxo(verticeInicial, verticeFinal, new ArrayList<Integer>(), verticeInicial);
+
+        }
+        
+        int flux = 0;
+        
+        for (int i = 0; i < this.numeroVertices; i++) {
+        flux+=super.matrizAdjacencia[i][verticeFinal];    
+        }
+        
+        return flux;
+    }
+
+    private void buscaProfundidadeFluxo(int verticeInicial, int verticeFinal, ArrayList<Integer> caminhoAux, int verticeAtual) {
+        ArrayList<Integer> caminhoAuxInterno = new ArrayList<>(caminhoAux);
+        caminhoAuxInterno.add(verticeInicial);
+        for (int i = 0; i < distanciaProfundidade.length; i++) {
+            if (super.matrizAdjacencia[verticeAtual][i] != 0 && distanciaProfundidade[i] >= distanciaProfundidade.length) {
+                if (i == verticeFinal) {
+                    caminhoAuxInterno.add(i);
+                    this.caminhosDeAumentoFR.add(caminhoAuxInterno);
+                    this.capacidadeResidual.add(menorFlux(caminhoAuxInterno));
+                    caminhoAuxInterno.remove(caminhoAuxInterno.size() - 1);
+                }
+                distanciaProfundidade[i] = distanciaProfundidade[verticeAtual] + super.getPeso(verticeAtual, i);
+                buscaProfundidadeFluxo(verticeInicial, verticeFinal, caminhoAuxInterno, i);
+                caminhoAuxInterno.remove(caminhoAuxInterno.size() - 1);
+            }
+        }
+
+    }
+
+    private Integer menorFlux(ArrayList<Integer> caminho) {
+
+        Integer min = Integer.MAX_VALUE;
+
+        for (int i = 1; i < caminho.size(); i++) {
+
+            if (super.matrizAdjacencia[caminho.get(i - 1)][caminho.get(i)] < min) {
+                min = super.matrizAdjacencia[caminho.get(i - 1)][caminho.get(i)];
+            }
+
+        }
+
+        return min;
+    }
+
+    private int maiorFlux() {
+
+        Integer max = 0;
+        int index = 0;
+
+        for (int i = 0; i < this.caminhosDeAumentoFR.size(); i++) {
+            if (this.capacidadeResidual.get(i) < max) {
+                max = this.capacidadeResidual.get(i);
+                index = i;
+            }
+        }
+
+        return index;
+    }
 
     public int[] getDistanciaProfundidade() {
         return distanciaProfundidade;

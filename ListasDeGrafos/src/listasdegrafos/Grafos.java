@@ -51,4 +51,8 @@ public class Grafos {
         // Retorna o peso da aresta entre dois vertices contido na matriz de adjacencia
         return matrizAdjacencia[vertice1][vertice2];
     }
+    
+    public void setPeso(int vertice1, int vertice2, int peso){
+        this.matrizAdjacencia[vertice1][vertice2] = peso;
+    }
 }

@@ -17,6 +17,7 @@ public class ListasDeGrafos {
         System.out.println("(1)- Busca em profundidade e largura");
         System.out.println("(2)- Dijkstra");
         System.out.println("(3)- AGM");
+        System.out.println("(4)- Fluxo Máximo");
         int choose = scanner.nextInt();
 
         if (choose == 1) {
@@ -227,6 +228,35 @@ public class ListasDeGrafos {
             for (int value : AGM.getVerticeAntecessorAGM()) {
                 System.out.print("[" + value + "]" + " ");
             }
+        }
+        
+        ////MAXFLUX-----------------MAXFLUX----------------MAXFLUX--------------MAXFLUX------------MAXFLUX
+        if(choose == 4){
+                    System.out.println("MAX FLUX");
+            System.out.println("(1)- Percorrer grafo 1");
+            System.out.println("(2)- Percorrer grafo 2");
+            int subchoose = scanner.nextInt();
+            FileReader arq = null;
+            if (subchoose == 1) {
+                arq = new FileReader("grafofluxo1.txt");
+            } else {
+                arq = new FileReader("grafofluxo2.txt");
+            }
+            BufferedReader lerArq = new BufferedReader(arq);
+
+            String vertCount = lerArq.readLine();
+            String[] vert1 = vertCount.split(" ");
+            AlgoritmosEmGrafos MAXFLUX = new AlgoritmosEmGrafos(Integer.valueOf(vert1[0]));
+
+            String linha = lerArq.readLine();
+
+            while (linha != null) {
+                String[] valores = linha.split(" ");
+                MAXFLUX.insereAresta(Integer.valueOf(valores[0]), Integer.valueOf(valores[1]), Integer.valueOf(valores[2]));
+                linha = lerArq.readLine();
+            }
+            
+            System.out.println(MAXFLUX.iniciaFluxoMaximoEmRedes(0, 7));
         }
     }
 
