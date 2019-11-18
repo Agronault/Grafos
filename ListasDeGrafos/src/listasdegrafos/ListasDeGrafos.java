@@ -256,7 +256,7 @@ public class ListasDeGrafos {
                 linha = lerArq.readLine();
             }
             
-            System.out.println(MAXFLUX.iniciaFluxoMaximoEmRedes(0, 7));
+            System.out.println(MAXFLUX.iniciaFluxoMaximoEmRedes(0, 3));
         }
     }
 

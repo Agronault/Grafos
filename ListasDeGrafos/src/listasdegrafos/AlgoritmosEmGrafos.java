@@ -1,9 +1,11 @@
 package listasdegrafos;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.Objects;
+import java.util.Queue;
 import javafx.util.Pair;
 
 public class AlgoritmosEmGrafos extends Grafos {
@@ -238,90 +240,64 @@ public class AlgoritmosEmGrafos extends Grafos {
     public int iniciaFluxoMaximoEmRedes(int verticeInicial, int verticeFinal) {
         this.caminhosDeAumentoFR.clear();
         this.capacidadeResidual.clear();
-        buscaProfundidadeFluxo(verticeInicial, verticeFinal, new ArrayList<Integer>(), verticeInicial);
-
         return fluxoMaximoEmRedes(verticeInicial, verticeFinal);
 
     }
 
     private int fluxoMaximoEmRedes(int verticeInicial, int verticeFinal) {
+        int[][] residual = new int[super.numeroVertices][super.numeroVertices];
+        int[] verticePredecessor = new int[this.numeroVertices];
+        int fluxoMaximo = 0;
 
-        while (!this.caminhosDeAumentoFR.isEmpty()) {
-            int melhorCaminho = maiorFlux();
+        residual = super.matrizAdjacencia.clone();
 
-            for (int i = this.caminhosDeAumentoFR.get(melhorCaminho).size() - 1; i >= 1; i--) {
-                int verticeA = this.caminhosDeAumentoFR.get(melhorCaminho).get(i);
-                int verticeB = this.caminhosDeAumentoFR.get(melhorCaminho).get(i - 1);
-
-                super.setPeso(verticeA, verticeB,
-                        super.getPeso(verticeA, verticeB) + this.capacidadeResidual.get(melhorCaminho));
-
-                super.setPeso(verticeB, verticeA,
-                        super.getPeso(verticeB, verticeA) - this.capacidadeResidual.get(melhorCaminho));
+        while (isEncontravel(verticeInicial, verticeFinal, residual, verticePredecessor)) {
+            int fluxoAtual = Integer.MAX_VALUE;
+            ArrayList<Integer> caminhoAtual = new ArrayList<>();
+            for (int i = verticeFinal; i != verticeInicial && i >= 0; i = verticePredecessor[i]) {
+                int aux = verticePredecessor[i];
+                fluxoAtual = (fluxoAtual < residual[aux][i]) ? fluxoAtual : residual[aux][i];
             }
 
-            this.caminhosDeAumentoFR.clear();
-            this.capacidadeResidual.clear();
-            buscaProfundidadeFluxo(verticeInicial, verticeFinal, new ArrayList<Integer>(), verticeInicial);
+            for (int i = verticeFinal; i != verticeInicial && i >= 0; i = verticePredecessor[i]) {
+                System.out.print("-[" + i + "]-");
+                caminhoAtual.add(i);
+                int aux = verticePredecessor[i];
+                residual[i][aux] += fluxoAtual;
+                residual[aux][i] -= fluxoAtual;
+            }
+            this.caminhosDeAumentoFR.add(caminhoAtual);
+            this.capacidadeResidual.add(fluxoAtual);
+            System.out.println("-[" + verticeInicial + "]-" + " flux: " + fluxoAtual);
+            fluxoMaximo += fluxoAtual;
+        }
 
-        }
-        
-        int flux = 0;
-        
-        for (int i = 0; i < this.numeroVertices; i++) {
-        flux+=super.matrizAdjacencia[i][verticeFinal];    
-        }
-        
-        return flux;
+        return fluxoMaximo;
     }
 
-    private void buscaProfundidadeFluxo(int verticeInicial, int verticeFinal, ArrayList<Integer> caminhoAux, int verticeAtual) {
-        ArrayList<Integer> caminhoAuxInterno = new ArrayList<>(caminhoAux);
-        caminhoAuxInterno.add(verticeInicial);
-        for (int i = 0; i < distanciaProfundidade.length; i++) {
-            if (super.matrizAdjacencia[verticeAtual][i] != 0 && distanciaProfundidade[i] >= distanciaProfundidade.length) {
-                if (i == verticeFinal) {
-                    caminhoAuxInterno.add(i);
-                    this.caminhosDeAumentoFR.add(caminhoAuxInterno);
-                    this.capacidadeResidual.add(menorFlux(caminhoAuxInterno));
-                    caminhoAuxInterno.remove(caminhoAuxInterno.size() - 1);
+    private boolean isEncontravel(int verticeInicial, int verticeFinal, int[][] residual, int[] verticePredecessor) {
+
+        boolean[] visitado = new boolean[super.numeroVertices];
+        Arrays.fill(visitado, false);
+        visitado[verticeInicial] = true;
+        verticePredecessor[verticeInicial] = Integer.MIN_VALUE;
+
+        Queue<Integer> fila = new LinkedList<>();
+        fila.add(verticeInicial);
+
+        while (!fila.isEmpty()) {
+            int aux = fila.poll();
+
+            for (int i = 0; i < super.numeroVertices; i++) {
+                if (residual[aux][i] != 0 && !visitado[i]) {
+                    verticePredecessor[i] = aux;
+                    visitado[i] = true;
+                    fila.add(i);
                 }
-                distanciaProfundidade[i] = distanciaProfundidade[verticeAtual] + super.getPeso(verticeAtual, i);
-                buscaProfundidadeFluxo(verticeInicial, verticeFinal, caminhoAuxInterno, i);
-                caminhoAuxInterno.remove(caminhoAuxInterno.size() - 1);
             }
         }
 
-    }
-
-    private Integer menorFlux(ArrayList<Integer> caminho) {
-
-        Integer min = Integer.MAX_VALUE;
-
-        for (int i = 1; i < caminho.size(); i++) {
-
-            if (super.matrizAdjacencia[caminho.get(i - 1)][caminho.get(i)] < min) {
-                min = super.matrizAdjacencia[caminho.get(i - 1)][caminho.get(i)];
-            }
-
-        }
-
-        return min;
-    }
-
-    private int maiorFlux() {
-
-        Integer max = 0;
-        int index = 0;
-
-        for (int i = 0; i < this.caminhosDeAumentoFR.size(); i++) {
-            if (this.capacidadeResidual.get(i) < max) {
-                max = this.capacidadeResidual.get(i);
-                index = i;
-            }
-        }
-
-        return index;
+        return visitado[verticeFinal];
     }
 
     public int[] getDistanciaProfundidade() {
